@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>仪器地标计算工具</title>
+<style>
+    *{margin:0;padding:0;box-sizing:border-box;font-family:微软雅黑;}
+    body{background:#f4f7fa;padding:40px;max-width:600px;margin:0 auto;}
+    .card{background:white;padding:30px;border-radius:12px;box-shadow:0 2px 12px rgba(0,0,0,0.08);}
+    h2{text-align:center;color:#333;margin-bottom:25px;}
+    .item{margin-bottom:25px;}
+    label{display:block;margin-bottom:8px;color:#555;font-size:15px;}
+    input{width:100%;padding:12px;border:1px solid #ddd;border-radius:6px;font-size:16px;}
+    button{margin-top:10px;padding:10px 20px;background:#2d8cf0;color:white;border:none;border-radius:6px;cursor:pointer;}
+    button:hover{background:#1b76d8;}
+    .result{margin-top:12px;padding:12px;background:#f8f9fa;border-radius:6px;color:#222;font-size:15px;line-height:1.8;}
+    .base-pos{color:#e63946;font-weight:bold;white-space:nowrap;}
+    .loop-pos{color:#2196f3;font-weight:bold;white-space:nowrap;}
+    .group-num{color:#00a86b;font-weight:bold;white-space:nowrap;}
+    .real-base{color:#9c27b0;font-weight:bold;white-space:nowrap;}
+    .error-tip{color:#f56c6c;}
+
+    .batch-box{margin-top:35px;padding-top:20px;border-top:1px solid #eee;}
+    .batch-title{font-size:16px;font-weight:bold;color:#333;margin-bottom:8px;text-align:center;}
+    .tip-text{text-align:center;color:red;font-size:14px;cursor:pointer;user-select:none;margin-bottom:15px;}
+    .round-title{font-size:15px;font-weight:bold;margin:12px 0 8px 0;color:#444;text-align:center;}
+    .batch-content{font-size:15px;line-height:2;overflow:hidden;transition:all 0.3s ease;}
+    .close{max-height:0;}
+    .open{max-height:2000px;}
+    .high{color:#ff4444;font-weight:bold;}
+</style>
+</head>
+<body>
+<div class="card">
+    <h2>仪器 地标计算工具</h2>
+
+    <div class="item">
+        <label>输入仪器号(1-296)</label>
+        <input type="number" id="numInput" placeholder="输入仪器号">
+        <button onclick="searchByNum()">查询地标</button>
+        <div class="result" id="numResult"></div>
+    </div>
+
+    <div class="item">
+        <label>输入地标号</label>
+        <input type="number" id="posInput" placeholder="输入地标号">
+        <button onclick="searchByPos()">查询仪器</button>
+        <div class="result" id="posResult"></div>
+    </div>
+
+    <div class="batch-box">
+        <div class="batch-title">收货批次对照</div>
+        <div class="tip-text" id="foldBtn">点击展开</div>
+        <div class="batch-content close" id="foldContent">
+            <div class="round-title">第一轮地标 1-74</div>
+• 第1次收到 1~36 号仪器<br>　→ <span class="high">10</span>号地标前<br>
+• 第2次收到 37~72 号仪器<br>　→ <span class="high">19</span>号地标前<br>
+• 第3次收到 73~108 号仪器<br>　→ <span class="high">28</span>号地标前<br>
+• 第4次收到 109~144 号仪器<br>　→ <span class="high">37</span>号地标前<br>
+• 第5次收到 145~180 号仪器<br>　→ <span class="high">46</span>号地标前<br>
+• 第6次收到 181~216 号仪器<br>　→ <span class="high">55</span>号地标前<br>
+• 第7次收到 217~252 号仪器<br>　→ <span class="high">64</span>号地标前<br>
+• 第8次收到 253~296 号仪器<br>　→ <span class="high">74</span>号地标前<br>
+
+            <div class="round-title">第二轮地标 75-148</div>
+• 第9次收到 1~36 号仪器<br>　→ <span class="high">83</span>号地标前<br>
+• 第10次收到 37~72 号仪器<br>　→ <span class="high">92</span>号地标前<br>
+• 第11次收到 73~108 号仪器<br>　→ <span class="high">101</span>号地标前<br>
+• 第12次收到 109~144 号仪器<br>　→ <span class="high">110</span>号地标前<br>
+• 第13次收到 145~180 号仪器<br>　→ <span class="high">119</span>号地标前<br>
+• 第14次收到 181~216 号仪器<br>　→ <span class="high">128</span>号地标前<br>
+• 第15次收到 217~252 号仪器<br>　→ <span class="high">137</span>号地标前<br>
+• 第16次收到 253~296 号仪器<br>　→ <span class="high">148</span>号地标前<br>
+
+            <div class="round-title">第三轮地标 149-222</div>
+• 第17次收到 1~36 号仪器<br>　→ <span class="high">157</span>号地标前<br>
+• 第18次收到 37~72 号仪器<br>　→ <span class="high">166</span>号地标前<br>
+• 第19次收到 73~108 号仪器<br>　→ <span class="high">175</span>号地标前<br>
+• 第20次收到 109~144 号仪器<br>　→ <span class="high">184</span>号地标前<br>
+• 第21次收到 145~180 号仪器<br>　→ <span class="high">193</span>号地标前<br>
+• 第22次收到 181~216 号仪器<br>　→ <span class="high">202</span>号地标前<br>
+• 第23次收到 217~252 号仪器<br>　→ <span class="high">211</span>号地标前<br>
+• 第24次收到 253~296 号仪器<br>　→ <span class="high">222</span>号地标前
+        </div>
+    </div>
+</div>
+
+<script>
+const foldBtn = document.getElementById('foldBtn');
+const foldContent = document.getElementById('foldContent');
+foldBtn.addEventListener('click',function(){
+    foldContent.classList.toggle('close');
+    foldContent.classList.toggle('open');
+    foldBtn.innerText = foldContent.classList.contains('open') ? '点击收起' : '点击展开';
+})
+
+const total = 296;
+const group = 4;
+const maxPos = 74;
+
+function searchByNum() {
+    let num = parseInt(document.getElementById('numInput').value);
+    let res = document.getElementById('numResult');
+
+    if (isNaN(num) || num < 1 || num > total) {
+        res.innerHTML = `<span class="error-tip">输入错误，请输入1-296范围内仪器号</span>`;
+        return;
+    }
+
+    let basePos = Math.ceil(num / group);
+    let p1 = basePos;
+    let p2 = basePos + maxPos;
+    let p3 = basePos + maxPos * 2;
+    let groupStart = (basePos - 1) * group + 1;
+    let groupArr = [groupStart, groupStart+1, groupStart+2, groupStart+3];
+
+    res.innerHTML = `归属基础地标：<span class="base-pos">${basePos}</span><br>三轮循环地标：<span class="loop-pos">${p1}、${p2}、${p3}</span><br>同组全部仪器：<span class="group-num">${groupArr.join('、')}</span>`;
+}
+
+function searchByPos() {
+    let pos = parseInt(document.getElementById('posInput').value);
+    let res = document.getElementById('posResult');
+
+    if (isNaN(pos) || pos < 1 || pos > 222) {
+        res.innerHTML = `<span class="error-tip">输入错误，请输入1-222范围内地标号</span>`;
+        return;
+    }
+
+    let realPos = ((pos - 1) % maxPos) + 1;
+    let start = (realPos - 1) * group + 1;
+    let instruments = [start, start+1, start+2, start+3];
+
+    res.innerHTML = `当前换算基准地标：<span class="real-base">${realPos}</span><br>对应关联仪器：<span class="group-num">${instruments.join('、')}</span>`;
+}
+</script>
+</body>
+</html>
