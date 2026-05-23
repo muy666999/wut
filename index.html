@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>3轮循环仪器地标查询（最终正确版）</title>
+<style>
+    *{margin:0;padding:0;box-sizing:border-box;font-family:微软雅黑;}
+    body{background:#f4f7fa;padding:40px;max-width:600px;margin:0 auto;}
+    .card{background:white;padding:30px;border-radius:12px;box-shadow:0 2px 12px rgba(0,0,0,0.08);}
+    h2{text-align:center;color:#333;margin-bottom:25px;}
+    .item{margin-bottom:25px;}
+    label{display:block;margin-bottom:8px;color:#555;font-size:15px;}
+    input{width:100%;padding:12px;border:1px solid #ddd;border-radius:6px;font-size:16px;}
+    button{margin-top:10px;padding:10px 20px;background:#2d8cf0;color:white;border:none;border-radius:6px;cursor:pointer;}
+    button:hover{background:#1b76d8;}
+    .result{margin-top:12px;padding:12px;background:#f8f9fa;border-radius:6px;color:#222;font-size:15px;}
+</style>
+</head>
+<body>
+<div class="card">
+    <h2>仪器 ↔ 地标 3轮循环查询（正确版）</h2>
+
+    <!-- 仪器号查3个地标 -->
+    <div class="item">
+        <label>1. 输入仪器号(1-296) → 查询3个循环地标</label>
+        <input type="number" id="numInput" placeholder="输入仪器号">
+        <button onclick="searchByNum()">查询地标</button>
+        <div class="result" id="numResult"></div>
+    </div>
+
+    <!-- 地标查对应仪器 -->
+    <div class="item">
+        <label>2. 输入地标号(1-222) → 查询对应4个仪器</label>
+        <input type="number" id="posInput" placeholder="输入地标号">
+        <button onclick="searchByPos()">查询仪器</button>
+        <div class="result" id="posResult"></div>
+    </div>
+</div>
+
+<script>
+const total = 296;     // 仪器总数
+const group = 4;       // 每组4个
+const maxPos = 74;     // 一轮74个地标
+
+// 1. 仪器号 → 3个地标
+function searchByNum() {
+    let num = parseInt(document.getElementById('numInput').value);
+    let res = document.getElementById('numResult');
+
+    if (isNaN(num) || num < 1 || num > total) {
+        res.innerText = "输入错误";
+        return;
+    }
+
+    let pos = Math.ceil(num / group);
+    let p1 = pos;
+    let p2 = pos + maxPos;
+    let p3 = pos + maxPos * 2;
+
+    res.innerText = `仪器 ${num} 对应3个地标：${p1}、${p2}、${p3}`;
+}
+
+// 2. 地标号 → 4个仪器号
+function searchByPos() {
+    let pos = parseInt(document.getElementById('posInput').value);
+    let res = document.getElementById('posResult');
+
+    if (isNaN(pos) || pos < 1 || pos > 222) {
+        res.innerText = "输入错误（范围1-222）";
+        return;
+    }
+
+    let realPos = ((pos - 1) % maxPos) + 1;
+    let start = (realPos - 1) * group + 1;
+    let end = realPos * group;
+
+    res.innerText = `地标 ${pos} 对应仪器：${start}、${start+1}、${start+2}、${end}`;
+}
+</script>
+</body>
+</html>
